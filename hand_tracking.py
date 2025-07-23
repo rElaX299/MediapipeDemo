@@ -4,6 +4,7 @@ import time
 from common.cv2_func import get_capture
 from common.com_func import get_fps
 
+# todo use get camera id instead
 cap = get_capture()
 mpHands = mp.solutions.hands
 hands = mpHands.Hands()
