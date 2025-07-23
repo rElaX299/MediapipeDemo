@@ -1,29 +1,42 @@
-import sys
 import cv2
 import mediapipe as mp
+import time
+from base_func import *
 
-cap = 0
-
-if sys.platform.startswith("win"):
-    # Windows 默认摄像头为0
-    cap = cv2.VideoCapture(0)
-elif sys.platform.startswith("darwin"):
-    # macos 默认摄像头为1, 0为iphone摄像头
-    cap = cv2.VideoCapture(1)
-elif sys.platform.startswith("linux"):
-    pass
-else:
-    pass
-
+cap = get_capture()
 mpHands = mp.solutions.hands
 hands = mpHands.Hands()
+mpDraw = mp.solutions.drawing_utils
+handLandmarkStyle = mpDraw.DrawingSpec(color=(0, 0, 255), thickness=5)
+handConnectionStyle = mpDraw.DrawingSpec(color=(255, 0, 0), thickness=10)
+prevTime = 0
+currTime = 0
 
 while True:
     ret, img = cap.read()
     if ret:
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         result = hands.process(imgRGB)
-        print(result.multi_hand_landmarks)
+        # print(result.multi_hand_landmarks)
+        handLandMarks = result.multi_hand_landmarks
+        imgHeight, imgWidth = img.shape[0], img.shape[1]
+        if handLandMarks:
+            for handLandmark in handLandMarks:
+                mpDraw.draw_landmarks(img, handLandmark,mpHands.HAND_CONNECTIONS,
+                                      handLandmarkStyle, handConnectionStyle)
+                for i, lm in enumerate(handLandmark.landmark):
+                    xPos = int(lm.x * imgWidth)
+                    yPos = int(lm.y * imgHeight)
+                    cv2.putText(img, str(i), (xPos-25, yPos+5),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    print(i, xPos, yPos)
+
+        currTime = time.time()
+        fps = 1 / (currTime - prevTime)
+        prevTime = currTime
+        cv2.putText(img, f"FPS: {int(fps)}", (30, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
         cv2.imshow('frame', img)
 
     if cv2.waitKey(1) == ord('q'):
