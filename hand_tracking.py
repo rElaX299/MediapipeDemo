@@ -1,11 +1,10 @@
 import cv2
 import mediapipe as mp
-import time
-from common.cv2_func import get_capture
+from common.system import get_camera_id
 from common.com_func import get_fps
 
-# todo use get camera id instead
-cap = get_capture()
+camera_id = get_camera_id()
+cap = cv2.VideoCapture(camera_id)
 mpHands = mp.solutions.hands
 hands = mpHands.Hands()
 mpDraw = mp.solutions.drawing_utils
