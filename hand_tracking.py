@@ -1,3 +1,7 @@
+"""
+    This is a demo that use hand tracking module in mediapipe.
+"""
+
 import cv2
 import mediapipe as mp
 from common.system import get_camera_id
@@ -5,6 +9,11 @@ from common.com_func import get_fps
 
 
 def get_lms(src_img):
+    """
+    Get landmarks information from source image
+    :param src_img: original image
+    :return: landmarks information
+    """
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
     result = hands.process(src_img)
@@ -12,15 +21,21 @@ def get_lms(src_img):
     return hand_lms
 
 
-def draw_landmarks(src_img, landmarks):
+def draw_landmarks(src_img, hand_lms):
+    """
+    Draw landmarks on image
+    :param src_img: where the landmarks draw
+    :param hand_lms: landmarks information
+    :return: None
+    """
     img_height, img_width = src_img.shape[0], src_img.shape[1]
     mp_draw = mp.solutions.drawing_utils
     # style
     hand_lm_style = mp_draw.DrawingSpec(color=(0, 0, 255), thickness=5)
     hand_con_style = mp_draw.DrawingSpec(color=(255, 0, 0), thickness=10)
 
-    if landmarks:
-        for hand_lm in landmarks:
+    if hand_lms:
+        for hand_lm in hand_lms:
             mp_draw.draw_landmarks(src_img, hand_lm, mp.solutions.hands.HAND_CONNECTIONS,
                                    hand_lm_style, hand_con_style)
             for i, lm in enumerate(hand_lm.landmark):
@@ -32,6 +47,11 @@ def draw_landmarks(src_img, landmarks):
 
 
 def add_fps_watermark(src_img):
+    """
+    Add FPS to image in left up corner
+    :param src_img: where the watermark draw
+    :return: None
+    """
     fps = get_fps()
     cv2.putText(src_img, f"FPS: {fps}", (30, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
