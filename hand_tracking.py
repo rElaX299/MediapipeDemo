@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
-from base_func import *
+from common.cv2_func import get_capture
 
 cap = get_capture()
 mpHands = mp.solutions.hands
