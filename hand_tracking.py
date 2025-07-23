@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import time
 from common.cv2_func import get_capture
+from common.com_func import get_fps
 
 cap = get_capture()
 mpHands = mp.solutions.hands
@@ -9,8 +10,6 @@ hands = mpHands.Hands()
 mpDraw = mp.solutions.drawing_utils
 handLandmarkStyle = mpDraw.DrawingSpec(color=(0, 0, 255), thickness=5)
 handConnectionStyle = mpDraw.DrawingSpec(color=(255, 0, 0), thickness=10)
-prevTime = 0
-currTime = 0
 
 while True:
     ret, img = cap.read()
@@ -31,10 +30,8 @@ while True:
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                     print(i, xPos, yPos)
 
-        currTime = time.time()
-        fps = 1 / (currTime - prevTime)
-        prevTime = currTime
-        cv2.putText(img, f"FPS: {int(fps)}", (30, 50),
+        fps = get_fps()
+        cv2.putText(img, f"FPS: {fps}", (30, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         cv2.imshow('frame', img)
