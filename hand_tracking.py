@@ -5,7 +5,7 @@
 import cv2
 import mediapipe as mp
 from common.com_func import get_fps
-from common.system import open_camera
+import common.system as system
 
 
 def get_lms(src_img):
@@ -62,13 +62,19 @@ def process_img(img, lms):
 
 
 def hand_tracking():
-    cap = open_camera()
+    camera_list = system.get_avail_cam()
+    print("Available cameras list:")
+    for camera_index, camera_name in camera_list.items():
+        print(f"ID: {camera_index}, Name: {camera_name}")
+    camera_id = int(input("Select camera ID: "))
+    camera = system.Camera(camera_id)
+    cap = camera.get_cap()
 
     while True:
         ret, img = cap.read()
         if not ret:
             print("Error: cap read error!")
-            cap.release()
+            camera.release_camera()
             break
 
         # prev process: convert image format to rgb
@@ -88,7 +94,7 @@ def hand_tracking():
         if cv2.waitKey(1) == ord('q'):
             break
 
-    cap.release()
+    camera.release_camera()
 
 
 if __name__ == "__main__":
