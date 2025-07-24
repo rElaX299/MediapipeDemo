@@ -1,28 +1,25 @@
-import sys
-from enum import Enum
+import cv2
+from pygrabber.dshow_graph import FilterGraph
 
-class CameraId(Enum):
-    """
-    Define the camera id in different OS.
-    """
-    WINDOWS_DEFAULT_CAMERA = 0  # Windows 默认摄像头为 0
-    MAC_IPHONE_CAMERA = 0       # macos 0 为调用iphone摄像头
-    MAC_DEFAULT_CAMERA = 1      # macos 默认摄像头为 1
 
-def get_camera_id() -> int:
-    """
-    Get camera id in different OS.
-    Windows default camera id is 0.
-    Mac default camera id is 1.
-    :return: camera id in current OS.
-    """
-    camera_id = 0
-    if sys.platform.startswith("win"):
-        camera_id = CameraId.WINDOWS_DEFAULT_CAMERA.value
-    elif sys.platform.startswith("darwin"):
-        camera_id = CameraId.MAC_DEFAULT_CAMERA.value
-    elif sys.platform.startswith("linux"):
-        pass
-    else:
-        pass
-    return camera_id
+def get_available_cameras() -> {}:
+    devices = FilterGraph().get_input_devices()
+    available_cameras = {}
+    for device_index, device_name in enumerate(devices):
+        available_cameras[device_index] = device_name
+    return available_cameras
+
+
+def open_camera():
+    camera_list = get_available_cameras()
+    print("Available cameras list:")
+    for camera_index, camera_name in camera_list.items():
+        print(f"ID: {camera_index}, Name: {camera_name}")
+
+    # select which camera to use
+    camera_id = int(input("Select camera id: "))
+    return cv2.VideoCapture(camera_id)
+
+
+if __name__ == "__main__":
+    print(get_available_cameras())
