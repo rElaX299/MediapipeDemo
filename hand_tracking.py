@@ -1,5 +1,6 @@
 """
     This is a demo that use hand tracking module in mediapipe.
+    todo: Hands model is unsupported. Try to use hand_landmarker instead.
 """
 
 import cv2
@@ -82,7 +83,6 @@ def hand_tracking():
 
         hand_lms = get_lms(img_rgb)
 
-        # todo: process image
         process_img(img, hand_lms)
 
         draw_landmarks(img, hand_lms)
