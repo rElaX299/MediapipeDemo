@@ -61,8 +61,10 @@ def process_img(img, lms):
     pass
 
 
-def main():
+def hand_tracking():
+    # todo: add available camera list
     camera_id = get_camera_id()
+    # todo: select which camera to use
     cap = cv2.VideoCapture(camera_id)
 
     while True:
@@ -89,4 +91,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    hand_tracking()
